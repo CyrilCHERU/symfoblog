@@ -46,7 +46,8 @@ class HomeController extends AbstractController
 
     public function list(PostRepository $repository)
     {
-        $posts = $repository->findAll();
-        dd($posts);
+        return $this->render('post/list.html.twig', [
+            'posts' => $repository->findAll()
+        ]);
     }
 }
