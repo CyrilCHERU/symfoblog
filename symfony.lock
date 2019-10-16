@@ -253,6 +253,9 @@
             "./templates/base.html.twig"
         ]
     },
+    "symfony/var-dumper": {
+        "version": "v4.3.5"
+    },
     "symfony/var-exporter": {
         "version": "v4.3.5"
     },

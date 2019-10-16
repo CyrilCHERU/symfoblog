@@ -8,3 +8,7 @@ home:
 plouf:
     path: /plouf
     controller: App\Controller\HomeController::plouf
+
+post_list:
+    path: /articles
+    controller: App\Controller\HomeController::list
