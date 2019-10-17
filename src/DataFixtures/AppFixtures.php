@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Category;
 use App\Entity\Post;
+use App\Entity\Tag;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
@@ -14,7 +15,19 @@ class AppFixtures extends Fixture
     {
         $faker = Factory::create('fr_FR');
 
-        $titles = ["Economie", "Politique", "Sports", "Santé", "Environnement"];
+        $titles = ["Economie", "Santé", "Environnement"];
+        $tagTitles = ["Marseille", "Corruption", "Banditisme", "Drogue", "Football", "Embouteillage", "Plages"];
+
+        $tags = [];
+
+        foreach ($tagTitles as $title) {
+            $tag = new Tag;
+            $tag->setTitle($title);
+
+            $manager->persist($tag);
+
+            $tags[] = $tag;
+        }
 
         foreach ($titles as $title) {
             $category = new Category;
@@ -30,6 +43,12 @@ class AppFixtures extends Fixture
                     ->setContent($faker->paragraphs(5, true))
                     ->setImage($faker->imageUrl(400, 400))
                     ->setCategory($category);
+
+                $postTags = $faker->randomElements($tags, mt_rand(2, 5));
+
+                foreach ($postTags as $tag) {
+                    $post->addTag($tag);
+                }
 
                 $manager->persist($post);
             }
