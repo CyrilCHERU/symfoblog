@@ -1,14 +1,14 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
-home:
-    path: /
-    controller: App\Controller\HomeController::index
+# home:
+#     path: /
+#     controller: App\Controller\HomeController::index
 
-plouf:
-    path: /plouf
-    controller: App\Controller\HomeController::plouf
+# plouf:
+#     path: /plouf
+#     controller: App\Controller\HomeController::plouf
 
-post_list:
-    path: /articles
-    controller: App\Controller\HomeController::list
+# post_list:
+#     path: /articles
+#     controller: App\Controller\HomeController::list
