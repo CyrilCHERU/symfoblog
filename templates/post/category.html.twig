@@ -1,0 +1,17 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    Catégories :
+    {{category.title}}
+{% endblock %}
+
+{% block body %}
+    <h1>Catégories :
+        {{category.title | upper }}
+        ({{ category.posts | length }}
+        article(s))
+    </h1>
+
+    {% include "post/_post.html.twig" with {"posts": category.posts} %}
+
+{% endblock %}
