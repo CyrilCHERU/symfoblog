@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Post;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @method Post|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,6 +18,26 @@ class PostRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Post::class);
+    }
+
+
+    public function findByTitle(string $search = '')
+    {
+
+        // $manager = $this->getEntityManager(); remplacé par 
+
+        $builder = $this->createQueryBuilder('p')
+            // $manager->createQueryBuilder()
+            ->addSelect('c, t')
+            ->join('p.category', 'c')
+            ->join('p.tags', 't');
+
+        if ($search) {
+            $builder->where('p.title LIKE :search')
+                ->setParameter('search', "%$search%");
+        }
+
+        return $builder->getQuery()->getResult();
     }
 
     // /**

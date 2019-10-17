@@ -39,12 +39,12 @@ class Post
     private $image;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="posts", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="posts")
      */
     private $category;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", mappedBy="posts", fetch="EAGER")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", mappedBy="posts")
      */
     private $tags;
 

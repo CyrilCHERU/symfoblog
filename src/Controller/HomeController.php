@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Post;
-use App\Repository\PostRepository;
 use App\Service\Calculator;
 use cebe\markdown\Markdown;
+use App\Repository\PostRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,7 +27,7 @@ class HomeController extends AbstractController
 
 
         $manager->persist($post);
-        $manager->flush();
+        // $manager->flush();
 
         die("plouf");
         $age = $calculator->calculateAge(1973);
@@ -44,8 +46,28 @@ class HomeController extends AbstractController
         return new Response($html);
     }
 
-    public function list(PostRepository $repository)
+    public function list(Request $request, PostRepository $repository)
     {
+        dd($request);
+        $search = $request->query->get('search', '');
+
+        return $this->render('post/list.html.twig', [
+            'posts' => $repository->findByTitle($search)
+        ]);
+    }
+
+    public function extract(PostRepository $repository, EntityManagerInterface $manager)
+    {
+        // SELECT p.* FROM post AS p donne
+        $articles = $manager->createQuery("
+            SELECT p 
+            FROM App\Entity\Post AS p")
+            ->setFirstResult(0)
+            ->setMaxResults(10)
+            ->getResult();
+
+        dd($articles);
+
         return $this->render('post/list.html.twig', [
             'posts' => $repository->findAll()
         ]);
