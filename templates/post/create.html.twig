@@ -1,0 +1,55 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    Créer un nouvel article
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">Créer un nouvel article</h1>
+
+    {{ form_start(form) }}
+
+    <div class="row">
+        <div class="col-9">
+            {{ form_row(form.title, {'label': 'Titre de l\'article'} ) }}
+                {{ form_row(form.introduction) }}
+                {{ form_row(form.content)}}
+                {{ form_row(form.image) }}
+            </div>
+            <div class="col-1"></div>
+            <div class="col-2">
+                {{ form_row(form.category) }}
+                {{ form_row(form.tags)}}
+            </div>
+        </div>
+    <div class="row">
+        <div class="col text-center">
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+        </div>
+    </div>
+
+    {{ form_end(form) }}
+    </div>
+
+
+{% endblock %}
+
+{% block form_row %}
+    <div class="form-group">
+        <div class="label">
+            {{ form_label(form) }}
+        </div>
+
+        {{ form_widget(form, { 'attr': {'class': 'form-control '} }) }}
+        <div class="text-muted">
+            {{ form_help(form) }}
+        </div>
+
+
+    </div>
+    <div class="invalid-feedback">
+        {{ form_errors(form) }}
+
+    </div>
+</div>{% endblock %}
