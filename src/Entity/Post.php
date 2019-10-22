@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PostRepository")
@@ -20,26 +21,35 @@ class Post
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Ce champ est requis !")
+     * @Assert\Length(min=10, minMessage="Le titre doit faire plus de 10 caractères")
      */
     private $title;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank(message="Ce champ est requis !")
+     * @Assert\Length(min=10, minMessage="L'introduction' doit faire plus de 10 caractères")
      */
     private $introduction;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank(message="Ce champ est requis !")
+     * @Assert\Length(min=100, minMessage="Le contenu doit faire plus de 100 caractères")
      */
     private $content;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Ce champ doit comporter l'URL d'une image !")
+     * @Assert\Url(message="L'URL de l'image n'est pas valide !")
      */
     private $image;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="posts")
+     * 
      */
     private $category;
 

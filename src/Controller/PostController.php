@@ -4,18 +4,19 @@ namespace App\Controller;
 
 use App\Entity\Tag;
 use App\Entity\Post;
+use App\Form\PostType;
 use App\Entity\Category;
+
 use App\Repository\PostRepository;
-use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
 
 class PostController extends AbstractController
 {
@@ -32,12 +33,46 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/blog/{id}", name="post_show", requirements={"id" : "\d+"})
+     * @Route("/blog/{category_id}/{id}", name="post_show", requirements={"id" : "\d+"})
      */
     public function show(Post $post)
     {
         return $this->render('post/show.html.twig', [
             'post' => $post
+        ]);
+    }
+
+    /**
+     * Edition pour modification d'un article
+     * 
+     * @Route("/blog/{id}/edit", name="post_edit")
+     *
+     * @return void
+     */
+    public function edit(Post $post, EntityManagerInterface $entityManagerInterface, Request $request)
+    {
+
+        $form = $this->createForm(PostType::class, $post);
+
+        // dd($form->createView());
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            dd($post);
+            $entityManagerInterface->flush();
+
+            // Generer le route : post_index => /blog
+            // $url = $generator->generate('post_index');
+            // return new RedirectResponse($url);
+            // OU
+            return $this->redirectToRoute('post_show', [
+                "category_id" => $post->getCategory()->getId(),
+                "id" => $post->getId()
+            ]);
+        }
+        return $this->render('post/edit.html.twig', [
+            'form' => $form->createView()
         ]);
     }
 
@@ -52,81 +87,7 @@ class PostController extends AbstractController
     {
         $post = new Post;
 
-        // $form = $this->createForm(PostType::class, $post);
-
-
-        $builder = $this->createFormBuilder($post)
-            ->add('title', TextType::class, [
-                'label' => "Titre de l'article",
-                'attr' => [
-                    'placeholder' => "Donnez un titre percutant à votre article"
-                ]
-            ])
-            ->add('introduction', TextType::class, [
-                'label' => "Votre introduction",
-                'attr' => [
-                    'placeholder' => "Donnez un texte court qui donne envie"
-                ]
-            ])
-            ->add('content', TextareaType::class, [
-                'label' => "Contenu",
-                'attr' => [
-                    'placeholder' => "Contenu de votre article"
-                ]
-            ])
-            ->add('image', UrlType::class, [
-                'label' => "URL de l'image",
-                'attr' => [
-                    'placeholder' => "Adresse web de votre image"
-                ]
-            ])
-            // ->add('category', ChoiceType::class, [
-            //     'choices'  => $categoryRepository->findAll(),
-            //     'choice_label' => function (Category $category) {
-            //         return strtoupper($category->getTitle());
-            //     },
-            //     'choice_value' => 'id',
-            //     'label' => "Catégorie de l'article",
-            //     // 'multiple' => true,
-            //     'expanded' => true,
-
-            // ]);  OU
-            // ->add('category', EntityType::class, [
-            //     'class' => Category::class,
-            //     'query_builder' => function (EntityRepository $er) {
-            //         return $er->createQueryBuilder('c')
-            //             ->orderBy('c.title', 'ASC');
-            //     },
-            //     'choice_label' => function (Category $category) {
-            //         return strtoupper($category->getTitle());
-            //     },
-            //     // 'choice_value' => 'id',
-            //     'label' => "Catégorie de l'article",
-            //     // 'multiple' => true,
-            //     'expanded' => true,
-
-            // ]); OU
-            ->add('category', EntityType::class, [
-                'class' => Category::class,
-                'choice_label' => 'title',
-                // 'choice_value' => 'id',
-                'label' => "Catégorie de l'article",
-                // 'multiple' => true,
-                // 'expanded' => true,
-
-            ])
-            ->add('tags', EntityType::class, [
-                'class' => Tag::class,
-                'choice_label' => 'title',
-                'label' => "Etiquettes de l'article",
-                'multiple' => true,
-                'expanded' => true,
-                'attr' => [
-                    'class' => 'inline'
-                ]
-            ]);
-
-        $form = $builder->getForm();
+        $form = $this->createForm(PostType::class, $post);
 
         // dd($form->createView());
 
@@ -136,6 +97,15 @@ class PostController extends AbstractController
 
             $entityManagerInterface->persist($post);
             $entityManagerInterface->flush();
+
+            // Generer le route : post_index => /blog
+            // $url = $generator->generate('post_index');
+            // return new RedirectResponse($url);
+            // OU
+            return $this->redirectToRoute('post_show', [
+                "category_id" => $post->getCategory()->getId(),
+                "id" => $post->getId()
+            ]);
         }
 
         return $this->render('post/create.html.twig', [
