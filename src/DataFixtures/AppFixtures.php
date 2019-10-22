@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Category;
+use App\Entity\Comment;
 use App\Entity\Post;
 use App\Entity\Tag;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -43,6 +44,16 @@ class AppFixtures extends Fixture
                     ->setContent($faker->paragraphs(5, true))
                     ->setImage($faker->imageUrl(400, 400))
                     ->setCategory($category);
+
+                for ($c = 0; $c < mt_rand(0, 5); $c++) {
+                    $comment = new Comment;
+                    $comment->setContent($faker->paragraphs(3, true))
+                        ->setCreatedAt($faker->dateTimeBetween("-6 months"))
+                        ->setPost($post);
+
+                    $manager->persist($comment);
+                }
+
 
                 $postTags = $faker->randomElements($tags, mt_rand(2, 5));
 

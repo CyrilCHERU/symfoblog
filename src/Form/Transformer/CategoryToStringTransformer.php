@@ -16,7 +16,9 @@ class CategoryToStringTransformer implements DataTransformerInterface
     }
     public function transform($value)
     {
-
+        if (!$value) {
+            return "";
+        }
         return $value->getTitle();
     }
 

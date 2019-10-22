@@ -2,19 +2,17 @@
 
 namespace App\Controller;
 
-use App\Entity\Tag;
 use App\Entity\Post;
 use App\Form\PostType;
+use App\Entity\Comment;
 use App\Entity\Category;
-
+use App\Form\CommentType;
 use App\Repository\PostRepository;
+use DateTime;
+use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
@@ -35,10 +33,29 @@ class PostController extends AbstractController
     /**
      * @Route("/blog/{category_id}/{id}", name="post_show", requirements={"id" : "\d+"})
      */
-    public function show(Post $post)
+    public function show(Post $post, Request $request, EntityManagerInterface $em)
     {
+        $comment = new Comment;
+        $form = $this->createForm(CommentType::class, $comment);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setPost($post)
+                ->setCreatedAt(new DateTime());
+
+            $em->persist($comment);
+            $em->flush();
+
+            return $this->redirectToRoute('post_show', [
+                'category_id' => $post->getCategory()->getTitle(),
+                'id' => $post->getId()
+            ]);
+        }
+
         return $this->render('post/show.html.twig', [
-            'post' => $post
+            'post' => $post,
+            'commentForm' => $form->createView()
         ]);
     }
 
@@ -59,7 +76,7 @@ class PostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            dd($post);
+
             $entityManagerInterface->flush();
 
             // Generer le route : post_index => /blog
