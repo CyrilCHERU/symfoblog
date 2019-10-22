@@ -45,7 +45,7 @@ class PostController extends AbstractController
     /**
      * Edition pour modification d'un article
      * 
-     * @Route("/blog/{id}/edit", name="post_edit")
+     * @Route("/admin/article/{id}/edit", name="post_edit", requirements={"id": "\d+"})
      *
      * @return void
      */
@@ -79,7 +79,7 @@ class PostController extends AbstractController
     /**
      * Création d'un article
      * 
-     * @Route("blog/create", name="post_create")
+     * @Route("/admin/article/create", name="post_create")
      *
      * @return void
      */
