@@ -16,9 +16,13 @@ security:
             security: false
         main:
             anonymous: true
-            guard:
-                authenticators:
-                    - App\Security\DbAuthenticator
+            logout: ~
+            form_login:
+                login_path: security_login
+                check_path: security_login
+            # guard:
+            #     authenticators:
+            #         - App\Security\DbAuthenticator
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
