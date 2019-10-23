@@ -35,12 +35,15 @@ class AppFixtures extends Fixture
         $manager->persist($admin);
 
         //2. 10 utilisateurs normaux
+        $users = [];
+
         for ($u = 0; $u < 10; $u++) {
             $user = new User;
             $user->setEmail("user$u@gmail.com")
                 ->setPassword($this->encoder->encodePassword($user, "password"))
                 ->setName($faker->userName);
 
+            $users[] = $user;
             $manager->persist($user);
         }
 
@@ -77,7 +80,8 @@ class AppFixtures extends Fixture
                     $comment = new Comment;
                     $comment->setContent($faker->paragraphs(3, true))
                         ->setCreatedAt($faker->dateTimeBetween("-6 months"))
-                        ->setPost($post);
+                        ->setPost($post)
+                        ->setAuthor($faker->randomElement($users));
 
                     $manager->persist($comment);
                 }

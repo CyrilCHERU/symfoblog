@@ -2,17 +2,17 @@
 
 namespace App\Controller;
 
+use DateTime;
 use App\Entity\Post;
 use App\Form\PostType;
 use App\Entity\Comment;
 use App\Entity\Category;
 use App\Form\CommentType;
 use App\Repository\PostRepository;
-use DateTime;
-use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
@@ -42,7 +42,8 @@ class PostController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $comment->setPost($post)
-                ->setCreatedAt(new DateTime());
+                ->setCreatedAt(new DateTime())
+                ->setAuthor($this->getUser());
 
             $em->persist($comment);
             $em->flush();
@@ -63,6 +64,7 @@ class PostController extends AbstractController
      * Edition pour modification d'un article
      * 
      * @Route("/admin/article/{id}/edit", name="post_edit", requirements={"id": "\d+"})
+     * @IsGranted("POST_EDIT", subject="post")
      *
      * @return void
      */
@@ -97,11 +99,16 @@ class PostController extends AbstractController
      * Création d'un article
      * 
      * @Route("/admin/article/create", name="post_create")
+     * @IsGranted("ROLE_AUTHOR")
      *
      * @return void
      */
     public function create(Request $request, EntityManagerInterface $entityManagerInterface)
     {
+        //$this->denyAccessUnlessGranted("ROLE_ADMIN");
+        // $this->getUser()
+
+
         $post = new Post;
 
         $form = $this->createForm(PostType::class, $post);

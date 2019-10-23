@@ -4,26 +4,35 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container">
-        <h1>Connexion au site</h1>
-        <form method="post">
-            <div class="form-group">
-                <input type="email" class="form-control" name="_username" placeholder="Saisissez votre email">
-            </div>
-            <div class="form-group">
-                <input type="password" class="form-control" name="_password" placeholder="Saisissez votre mot de passe">
-            </div>
-            <button class="btn btn-success">Connexion</button>
-        </form>
+    <div class="container text-center">
 
+        <h1 class="mt-5">Connexion au site</h1>
+        <div class="row justify-content-center">
+
+            <form method="post">
+                <div class="col mt-3 bkg-div rounded">
+                    <div class="form-group">
+                        <input type="email" class="form-control" name="_username" placeholder="Saisissez votre email">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" name="_password" placeholder="Saisissez votre mot de passe">
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col">
+                        <button class="btn btn-success">Connexion</button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
     </div>
-    {# {{ form_start(form) }}
-        
-            {{ form_widget(form) }}
-        
-            <button class="btn btn-success">Je commente</button>
-        
-            {{ form_end(form) }} #}
 
-
-{% endblock %}
+</div>
+{# {{ form_start(form) }}
+                                                                    
+                                                                        {{ form_widget(form) }}
+                                                                    
+                                                                        <button class="btn btn-success">Je commente</button>
+                                                                    
+                                                                        {{ form_end(form) }} #}{% endblock %}

@@ -10,7 +10,10 @@
         <div class="row">
             <div class="col">
                 <h1 class="mt-4 mb-5">{{post.title}}
-                    <a href="{{ path('post_edit', {'id': post.id}) }}" class="btn btn-outline-primary float-right">Modifier</a>
+                    {% if is_granted('POST_EDIT', post) %}
+                        <a href="{{ path('post_edit', {'id': post.id}) }}" class="btn btn-outline-primary float-right">Modifier</a>
+                    {% endif %}
+
                 </h1>
                 <div class="clearfix">
                     <img class=" float-left mr-5 mb-5" src=" {{post.image}} " alt=" {{post.title}} ">
@@ -37,16 +40,19 @@
                 </div>
             </div>
         </div>
+        {% if post.comments | length>0 %}
+            <h2 class="my-5">Déjà
+                {{ post.comments | length }}
+                réaction(s) à cet article !</h2>
 
-        <h2 class="my-5">Déjà
-            {{ post.comments | length }}
-            réaction(s) à cet article !</h2>
+        {% endif %}
 
         {% for comment in post.comments %}
             <div class="alert alert-light mb-3">
                 <div class="row">
                     <div class="col-1">
-                        <strong>Lior à dit</strong><br>
+                        <strong>{{ comment.author.name }}
+                            a dit</strong><br>
                         <small class="d-block">Le
                             {{ comment.createdAt | date}}</small>
                     </div>
@@ -58,16 +64,30 @@
                 </div>
             </div>
         {% endfor %}
+        {% if is_granted('ROLE_USER') %}
+            <div class="alert alert-light">
+                <h2 class="alert-title">
+                    {% if post.comments | length>0 %}
+                        Vous aussi réagissez !
+                    {% else %}
+                        Soyez la première personne à réagir !
+                    {% endif %}
+                </h2>
+                {{ form_start(commentForm) }}
 
-        <div class="alert alert-light">
-            <h2 class="alert-title">Vous aussi réagissez !</h2>
-            {{ form_start(commentForm) }}
+                {{ form_widget(commentForm) }}
 
-            {{ form_widget(commentForm) }}
+                <button class="btn btn-success">Je commente</button>
 
-            <button class="btn btn-success">Je commente</button>
+                {{ form_end(commentForm) }}
+            </div>
+        {% else %}
+            <div class="alert alert-light">
+                <h2 class="alert-title">Pour réagir, connectez-vous</h2>
+                <a href="{{ path('security_login') }}" class="btn btn-success text-white">Connexion</a>
+                <a href="" class="btn btn-link">ou inscrivez vous</a>
+            </div>
+        {% endif %}
 
-            {{ form_end(commentForm) }}
-        </div>
     </div>
 {% endblock %}

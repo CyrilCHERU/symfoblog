@@ -3,3 +3,9 @@
     padding-left: 10px;
     border-left: 4px solid #ddd;
 }
+
+.bkg-div {
+    background-color: #aaa;
+    padding: 25px;
+    box-shadow: 3px 3px black;
+}
