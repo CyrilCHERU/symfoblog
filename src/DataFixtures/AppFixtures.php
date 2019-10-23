@@ -72,7 +72,7 @@ class AppFixtures extends Fixture
 
                 $post->setTitle($faker->catchPhrase)
                     ->setIntroduction($faker->sentence(15))
-                    ->setContent($faker->paragraphs(5, true))
+                    ->setContent($faker->paragraphs(8, true))
                     ->setImage($faker->imageUrl(400, 400))
                     ->setCategory($category);
 

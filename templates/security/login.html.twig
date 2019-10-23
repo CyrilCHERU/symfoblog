@@ -19,6 +19,10 @@
                     </div>
                 </div>
                 <div class="row mt-3">
+                    {% if app.request.query.has('redirect') %}
+                        <input type="hidden" name="_target_path" value="{{ app.request.query.get('redirect') }}">
+                    {% endif %}
+
                     <div class="col">
                         <button class="btn btn-success">Connexion</button>
                     </div>
