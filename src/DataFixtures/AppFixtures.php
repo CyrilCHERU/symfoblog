@@ -2,19 +2,47 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Category;
-use App\Entity\Comment;
-use App\Entity\Post;
+use Faker\Factory;
 use App\Entity\Tag;
+use App\Entity\Post;
+use App\Entity\User;
+use App\Entity\Comment;
+use App\Entity\Category;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
-use Faker\Factory;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {
+    protected $encoder;
+
+    public function __construct(UserPasswordEncoderInterface $encoder)
+    {
+        $this->encoder = $encoder;
+    }
     public function load(ObjectManager $manager)
     {
         $faker = Factory::create('fr_FR');
+
+        // LEs users
+        // 1. creation d'un admin
+        $admin = new User;
+        $admin->setEmail("admin@admin.com")
+            ->setPassword($this->encoder->encodePassword($admin, "password"))
+            ->setName('Administrateur')
+            ->setRoles(['ROLE_ADMIN']);
+
+        $manager->persist($admin);
+
+        //2. 10 utilisateurs normaux
+        for ($u = 0; $u < 10; $u++) {
+            $user = new User;
+            $user->setEmail("user$u@gmail.com")
+                ->setPassword($this->encoder->encodePassword($user, "password"))
+                ->setName($faker->userName);
+
+            $manager->persist($user);
+        }
 
         $titles = ["Economie", "Santé", "Environnement"];
         $tagTitles = ["Marseille", "Corruption", "Banditisme", "Drogue", "Football", "Embouteillage", "Plages"];
