@@ -16,8 +16,9 @@ class HomeController extends AbstractController
      *
      * @return void
      */
-    public function home()
+    public function home($time)
     {
+
         return $this->render("home/index.html.twig");
     }
 

@@ -7,6 +7,7 @@ use App\Entity\Post;
 use App\Form\PostType;
 use App\Entity\Comment;
 use App\Entity\Category;
+use App\Event\CommentAddedEvent;
 use App\Form\CommentType;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PostController extends AbstractController
 {
@@ -33,7 +34,7 @@ class PostController extends AbstractController
     /**
      * @Route("/blog/{category_id}/{id}", name="post_show", requirements={"id" : "\d+"})
      */
-    public function show(Post $post, Request $request, EntityManagerInterface $em)
+    public function show(Post $post, Request $request, EntityManagerInterface $em, EventDispatcherInterface $ed)
     {
         $comment = new Comment;
         $form = $this->createForm(CommentType::class, $comment);
@@ -45,8 +46,15 @@ class PostController extends AbstractController
                 ->setCreatedAt(new DateTime())
                 ->setAuthor($this->getUser());
 
+            // Procedure d'envoi de mail
+
             $em->persist($comment);
             $em->flush();
+
+            // pour ce faire on dispatchera plutot un evenement custom qui embarque les donnée du commentaire
+            $commentAddedEvent = new CommentAddedEvent($comment);
+
+            $ed->dispatch($commentAddedEvent, 'blog.comment.add');
 
             return $this->redirectToRoute('post_show', [
                 'category_id' => $post->getCategory()->getTitle(),
