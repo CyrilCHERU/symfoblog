@@ -39,6 +39,11 @@ class CategoryController extends AbstractController
             $em->persist($category);
             $em->flush();
 
+            $this->addFlash(
+                'success',
+                "Votre catégorie <strong>{$category->getTitle()}</strong> a bien été ajoutée !"
+            );
+
             return $this->redirectToRoute('category_index');
         }
         return $this->render('category/create.html.twig', [
@@ -61,6 +66,11 @@ class CategoryController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $em->flush();
+
+            $this->addFlash(
+                'success',
+                "Votre catégorie <strong>{$category->getTitle()}</strong> a bien été modifiée !"
+            );
 
             return $this->redirectToRoute('category_index');
         }

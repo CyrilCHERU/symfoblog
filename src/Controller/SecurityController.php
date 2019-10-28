@@ -19,6 +19,11 @@ class SecurityController extends AbstractController
     public function login()
     {
         // $form = $this->createForm(LoginType::class);
+        $this->addFlash(
+            'success',
+            "Bonjour {$this->getUser()}</strong>, vous êtes connecté :)"
+        );
+
         return $this->render('security/login.html.twig');
 
         // [
@@ -32,7 +37,12 @@ class SecurityController extends AbstractController
      * @return void
      */
     public function logOut()
-    { }
+    {
+        $this->addFlash(
+            'danger',
+            "Au revoir {$this->getUser()}</strong>, vous êtes déconnecté :)"
+        );
+    }
 
     /**
      * @Route("/register", name="security_register")
@@ -55,6 +65,11 @@ class SecurityController extends AbstractController
 
             $em->persist($user);
             $em->flush();
+
+            $this->addFlash(
+                'success',
+                "Bonjour {$this->getUser()}</strong>, vous êtes inscrit :)"
+            );
 
             return $this->redirectToRoute('security_login');
         }

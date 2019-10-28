@@ -51,6 +51,11 @@ class PostController extends AbstractController
             $em->persist($comment);
             $em->flush();
 
+            $this->addFlash(
+                'success',
+                "Votre commentaire  a bien été ajouté !"
+            );
+
             // pour ce faire on dispatchera plutot un evenement custom qui embarque les donnée du commentaire
             $commentAddedEvent = new CommentAddedEvent($comment);
 
@@ -88,6 +93,11 @@ class PostController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $entityManagerInterface->flush();
+
+            $this->addFlash(
+                'success',
+                "Votre article <strong>{$post->getTitle()}</strong> a bien été modifié !"
+            );
 
             // Generer le route : post_index => /blog
             // $url = $generator->generate('post_index');
@@ -129,6 +139,11 @@ class PostController extends AbstractController
 
             $entityManagerInterface->persist($post);
             $entityManagerInterface->flush();
+
+            $this->addFlash(
+                'success',
+                "Votre nouvel article <strong>{$post->getTitle()}</strong> a bien été enregistré !"
+            );
 
             // Generer le route : post_index => /blog
             // $url = $generator->generate('post_index');
